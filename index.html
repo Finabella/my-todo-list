@@ -1,280 +1,378 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>do! — catchy to‑do</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-Roboto, sans-serif;
+            font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
+
         body {
             background: linear-gradient(145deg, #f9f0e7 0%, #f4e3d3 100%);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 1.5rem;
-            transition: background 0.3s ease;
+            padding: 1rem;
         }
-        /* main card – soft & catchy */
+
+        /* main card – fully responsive */
         .glass-card {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(16px) saturate(180%);
             -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border-radius: 48px 48px 48px 48px;
-            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.1), 0 10px 25px rgba(252, 196, 124, 0.3), inset  0 2px 4px rgba(255,255,255,0.8);
+            border-radius: 48px;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.1), 0 10px 25px rgba(252, 196, 124, 0.3);
             width: 100%;
             max-width: 720px;
-            padding: 2rem 2rem 2.5rem 2rem;
+            padding: 1.5rem;
             border: 1px solid rgba(255, 245, 235, 0.6);
         }
+
         /* auth section toggle */
         .auth-tabs {
             display: flex;
-            gap: 0.75rem;
+            gap: 0.5rem;
             flex-wrap: wrap;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             background: rgba(235, 220, 210, 0.4);
             padding: 0.5rem;
             border-radius: 200px;
             justify-content: center;
         }
+
         .auth-tab {
             background: transparent;
             border: none;
-            padding: 0.9rem 2.2rem;
-            font-size: 1.2rem;
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
             font-weight: 600;
             border-radius: 200px;
             color: #7a5d4a;
             cursor: pointer;
             transition: all 0.2s ease;
-            letter-spacing: 0.5px;
-            flex: 0 1 auto;
-            backdrop-filter: blur(4px);
+            flex: 1 1 auto;
+            min-width: 120px;
         }
+
         .auth-tab.active {
             background: #ffdbb5;
             box-shadow: 0 8px 18px #edd3b1;
             color: #4f3a2b;
         }
+
         .auth-forms {
             background: rgba(253, 247, 240, 0.7);
             border-radius: 36px;
-            padding: 2rem 1.8rem;
-            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
             border: 1px solid #fff6e5;
         }
+
         .auth-form {
             display: none;
             flex-direction: column;
-            gap: 1.4rem;
+            gap: 1rem;
         }
+
         .auth-form.active-form {
             display: flex;
         }
+
         .input-group {
             display: flex;
             flex-direction: column;
             gap: 0.4rem;
+            position: relative;
         }
+
         .input-group label {
             font-weight: 500;
             color: #5e4535;
-            font-size: 0.95rem;
-            letter-spacing: 0.3px;
-            margin-left: 0.5rem;
+            font-size: 0.9rem;
+            margin-left: 0.3rem;
         }
-        .input-group input {
+
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-wrapper input {
             background: white;
             border: 2px solid transparent;
-            padding: 1rem 1.4rem;
+            padding: 0.8rem 3rem 0.8rem 1.2rem;
             border-radius: 200px;
             font-size: 1rem;
             outline: none;
-            transition: 0.2s;
             box-shadow: 0 4px 10px rgba(160, 120, 80, 0.1);
             color: #2e241e;
+            width: 100%;
         }
-        .input-group input:focus {
-            border-color: #fcb seventeenth century; /* playful fallback */
+
+        .input-group input:not(.password-wrapper input) {
+            background: white;
+            border: 2px solid transparent;
+            padding: 0.8rem 1.2rem;
+            border-radius: 200px;
+            font-size: 1rem;
+            outline: none;
+            box-shadow: 0 4px 10px rgba(160, 120, 80, 0.1);
+            color: #2e241e;
+            width: 100%;
+        }
+
+        .input-group input:focus,
+        .password-wrapper input:focus {
             border-color: #f9b87c;
             box-shadow: 0 8px 20px #fad6b3;
         }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: #9b7b64;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-password:hover {
+            background: rgba(255, 215, 175, 0.5);
+            color: #6b4f3a;
+        }
+
         .btn {
             background: #f9cd9c;
             border: none;
-            padding: 1rem 2rem;
+            padding: 0.8rem 1.5rem;
             border-radius: 200px;
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #3e2e23;
-            box-shadow: 0 8px 0 #cf9f73, 0 6px 20px #ebc7a2;
+            box-shadow: 0 5px 0 #cf9f73, 0 6px 20px #ebc7a2;
             cursor: pointer;
             transition: all 0.1s ease-out;
-            margin-top: 0.5rem;
+            margin-top: 0.3rem;
             border: 1px solid #ffe7d1;
+            width: 100%;
         }
+
         .btn:active {
-            transform: translateY(6px);
+            transform: translateY(4px);
             box-shadow: 0 2px 0 #cf9f73, 0 6px 18px #ebc7a2;
         }
-        .message {
+
+        .btn.small {
+            width: auto;
+            padding: 0.6rem 1.2rem;
             font-size: 0.9rem;
+        }
+
+        .message {
+            font-size: 0.85rem;
             padding: 0.3rem 1rem;
             border-radius: 100px;
             background: #f3e1d1;
             color: #5c4131;
             text-align: center;
         }
-        /* To‑do section – only visible when logged in */
+
+        /* To‑do section */
         .todo-section {
             display: none;
         }
+
         .todo-header {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.8rem;
             flex-wrap: wrap;
-            margin-bottom: 1.8rem;
+            margin-bottom: 1.5rem;
             background: #ffefdd;
-            padding: 1rem 1.8rem;
+            padding: 0.8rem 1.2rem;
             border-radius: 200px;
         }
+
         .user-greeting {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 600;
             color: #4f3625;
             margin-right: auto;
+            word-break: break-word;
         }
+
         .logout-btn {
             background: #e9cbb2;
-            box-shadow: 0 5px 0 #b68f70;
-            padding: 0.6rem 1.8rem;
-            font-size: 1rem;
+            box-shadow: 0 4px 0 #b68f70;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
             border-radius: 200px;
             border: none;
             font-weight: 600;
             color: #35281e;
             cursor: pointer;
             transition: 0.1s;
+            white-space: nowrap;
         }
+
         .logout-btn:active {
-            transform: translateY(4px);
+            transform: translateY(3px);
             box-shadow: 0 1px 0 #b68f70;
         }
+
         .add-task {
             display: flex;
             flex-direction: row;
-            gap: 0.8rem;
-            margin-bottom: 2.5rem;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
             flex-wrap: wrap;
         }
+
         .add-task input {
             flex: 1 1 200px;
             background: white;
             border: 2px solid #ffe1c6;
-            padding: 1rem 1.5rem;
+            padding: 0.8rem 1.2rem;
             border-radius: 200px;
             font-size: 1rem;
             outline: none;
+            min-width: 150px;
         }
+
         .add-task input:focus {
             border-color: #f6b379;
         }
+
         .add-task .btn {
-            padding: 1rem 2.2rem;
+            padding: 0.8rem 1.5rem;
             margin-top: 0;
-            font-size: 1.1rem;
-            flex: 0 0 auto;
+            font-size: 1rem;
+            flex: 0 1 auto;
             background: #f3bc84;
-            box-shadow: 0 5px 0 #c4925f;
+            box-shadow: 0 4px 0 #c4925f;
+            width: auto;
         }
+
         .task-list {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 0.6rem;
             max-height: 340px;
             overflow-y: auto;
-            padding-right: 6px;
+            padding-right: 4px;
         }
+
         .task-item {
             background: #fffbf5;
             border-radius: 200px;
-            padding: 0.4rem 0.4rem 0.4rem 1.8rem;
+            padding: 0.3rem 0.3rem 0.3rem 1.2rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.3rem;
             border: 1px solid #ffdbb5;
-            box-shadow: 0 6px 12px #edd9c4;
+            box-shadow: 0 4px 8px #edd9c4;
+            width: 100%;
         }
+
         .task-text {
             flex: 1;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 500;
             color: #35281e;
             word-break: break-word;
-            padding: 0.5rem 0;
+            padding: 0.4rem 0;
         }
+
         .task-check {
-            width: 1.4rem;
-            height: 1.4rem;
+            width: 1.2rem;
+            height: 1.2rem;
             accent-color: #e9a36b;
             cursor: pointer;
+            flex-shrink: 0;
         }
+
         .delete-task {
             background: #f7d5ba;
             border: none;
             color: #7b4e30;
-            width: 3rem;
-            height: 3rem;
+            width: 2.5rem;
+            height: 2.5rem;
             border-radius: 50%;
-            font-size: 1.6rem;
-            font-weight: 400;
+            font-size: 1.4rem;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: 0.15s;
             box-shadow: 0 3px 0 #bf9f82;
-            line-height: 1;
+            flex-shrink: 0;
         }
+
         .delete-task:active {
             transform: translateY(4px);
             box-shadow: 0 0 0 #bf9f82;
         }
+
         .empty-tasks {
             text-align: center;
             color: #a48c78;
             font-style: italic;
-            padding: 2rem;
+            padding: 1.5rem;
             background: #fffcf3;
             border-radius: 100px;
         }
-        /* responsive tweaks */
+
+        /* Footer */
+        .site-footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            color: #7a5d4a;
+            font-weight: 500;
+            width: 100%;
+            font-size: 0.95rem;
+        }
+
+        /* mobile responsive */
         @media (max-width: 500px) {
-            .glass-card { padding: 1.5rem; }
-            .auth-tab { padding: 0.7rem 1.2rem; font-size: 1rem; }
-            .todo-header { flex-direction: column; align-items: stretch; }
-            .user-greeting { text-align: center; }
+            body { padding: 0.8rem; }
+            .glass-card { padding: 1.2rem; }
+            .auth-tab { padding: 0.6rem 1rem; min-width: 100px; }
+            .user-greeting { font-size: 1.1rem; }
+            .task-item { padding-left: 1rem; }
+            .delete-task { width: 2.2rem; height: 2.2rem; font-size: 1.2rem; }
+            .site-footer { font-size: 0.85rem; padding: 10px; }
+            .toggle-password { right: 10px; }
         }
     </style>
-    <!-- Poppins font – fresh & catchy -->
+    <!-- Poppins font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display= swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="glass-card">
-        <!-- AUTH SECTION (shown when no user) -->
+
+        <!-- AUTH SECTION -->
         <div id="authContainer">
             <div class="auth-tabs">
                 <button class="auth-tab active" id="loginTabBtn">log in</button>
@@ -284,12 +382,15 @@ href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&disp
                 <!-- login form -->
                 <div class="auth-form active-form" id="loginForm">
                     <div class="input-group">
-                        <label> username</label>
+                        <label>👤 username</label>
                         <input type="text" id="loginUsername" placeholder="e.g., sunny" autocomplete="off">
                     </div>
                     <div class="input-group">
-                        <label> password</label>
-                        <input type="password" id="loginPassword" placeholder="••••••••">
+                        <label>🔒 password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="loginPassword" placeholder="••••••••">
+                            <button type="button" class="toggle-password" id="toggleLoginPassword" aria-label="Show password">👁️</button>
+                        </div>
                     </div>
                     <button class="btn" id="loginBtn">log in →</button>
                     <div class="message" id="loginMessage"></div>
@@ -297,67 +398,85 @@ href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&disp
                 <!-- register form -->
                 <div class="auth-form" id="registerForm">
                     <div class="input-group">
-                        <label> new username</label>
+                        <label>✨ new username</label>
                         <input type="text" id="regUsername" placeholder="choose a name" autocomplete="off">
                     </div>
                     <div class="input-group">
-                        <label> password</label>
-                        <input type="password" id="regPassword" placeholder="at least 4 chars">
+                        <label>🔐 password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="regPassword" placeholder="at least 4 chars">
+                            <button type="button" class="toggle-password" id="toggleRegPassword" aria-label="Show password">👁️</button>
+                        </div>
                     </div>
-                    <button class="btn" id="registerBtn">register </button>
+                    <button class="btn" id="registerBtn">register ✨</button>
                     <div class="message" id="registerMessage"></div>
                 </div>
             </div>
         </div>
-        <!-- TO-DO SECTION (shown after login) -->
+
+        <!-- TO-DO SECTION -->
         <div id="todoContainer" class="todo-section">
             <div class="todo-header">
                 <span class="user-greeting" id="greetingName"></span>
-                <button class="logout-btn" id="logoutBtn"> log out</button>
+                <button class="logout-btn" id="logoutBtn">🚪 log out</button>
             </div>
+
             <div class="add-task">
                 <input type="text" id="taskInput" placeholder="write a new task ...">
-                <button class="btn" id="addTaskBtn">Add task</button>
+                <button class="btn small" id="addTaskBtn">add task</button>
             </div>
+
             <ul class="task-list" id="taskList">
-                <!-- dynamic tasks appear here -->
-                <li class="empty-tasks"> your to‑do list is empty — add something!</li>
+                <li class="empty-tasks">✨ your to‑do list is empty — add something!</li>
             </ul>
         </div>
     </div>
+
+    <!-- FOOTER -->
+    <div class="site-footer">
+        © 2026 Made with ❤️ by Finabella
+    </div>
+
     <script>
         (function() {
-            // --- STORAGE KEYS ---
+            // STORAGE KEYS
             const USERS_KEY = 'todo_users';
             const SESSION_KEY = 'todo_current_user';
-            const TASKS_PREFIX = 'todo_tasks_';   // + username
-            // ---------- helper: storage ----------
+            const TASKS_PREFIX = 'todo_tasks_';
+
+            // helper functions
             function getUsers() {
                 const stored = localStorage.getItem(USERS_KEY);
-                return stored ? JSON.parse(stored) : {};   // { username: password }
+                return stored ? JSON.parse(stored) : {};
             }
+
             function saveUsers(users) {
                 localStorage.setItem(USERS_KEY, JSON.stringify(users));
             }
+
             function getCurrentUser() {
                 return localStorage.getItem(SESSION_KEY) || null;
             }
+
             function setCurrentUser(username) {
                 if (username) localStorage.setItem(SESSION_KEY, username);
                 else localStorage.removeItem(SESSION_KEY);
             }
+
             function getTasks(username) {
                 if (!username) return [];
                 const key = TASKS_PREFIX + username;
                 const data = localStorage.getItem(key);
                 return data ? JSON.parse(data) : [];
             }
+
             function saveTasks(username, tasks) {
                 if (!username) return;
                 const key = TASKS_PREFIX + username;
                 localStorage.setItem(key, JSON.stringify(tasks));
             }
-            // ---------- DOM elements ----------
+
+            // DOM elements
             const authContainer = document.getElementById('authContainer');
             const todoContainer = document.getElementById('todoContainer');
             const loginTabBtn = document.getElementById('loginTabBtn');
@@ -377,63 +496,97 @@ href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&disp
             const taskInput = document.getElementById('taskInput');
             const addTaskBtn = document.getElementById('addTaskBtn');
             const taskListEl = document.getElementById('taskList');
-            // ---------- state / current user ----------
+            
+            // Password toggle buttons
+            const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+            const toggleRegPassword = document.getElementById('toggleRegPassword');
+
+            // Password visibility toggle function
+            function setupPasswordToggle(toggleBtn, passwordField) {
+                toggleBtn.addEventListener('click', function() {
+                    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordField.setAttribute('type', type);
+                    
+                    // Change emoji based on visibility
+                    if (type === 'text') {
+                        toggleBtn.textContent = '🔓';
+                        toggleBtn.setAttribute('aria-label', 'Hide password');
+                    } else {
+                        toggleBtn.textContent = '👁️';
+                        toggleBtn.setAttribute('aria-label', 'Show password');
+                    }
+                });
+            }
+
+            // Initialize password toggles
+            setupPasswordToggle(toggleLoginPassword, loginPassword);
+            setupPasswordToggle(toggleRegPassword, regPassword);
+
+            // state
             let currentUser = getCurrentUser();
-            // ---------- UI initialization: show correct section ----------
+
+            // UI refresh
             function refreshUI() {
                 const user = getCurrentUser();
                 if (user) {
-                    // show todo, hide auth
                     authContainer.style.display = 'none';
                     todoContainer.style.display = 'block';
-                    greetingName.textContent = ` ${user}'s tasks`;
+                    greetingName.textContent = `🍉 ${user}'s tasks`;
                     renderTasks(user);
                 } else {
                     authContainer.style.display = 'block';
                     todoContainer.style.display = 'none';
-                    // reset forms & messages
                     loginUsername.value = ''; loginPassword.value = ''; loginMessage.textContent = '';
                     regUsername.value = ''; regPassword.value = ''; registerMessage.textContent = '';
-                    // default to login tab
+                    
+                    // Reset password fields to hidden and eye icon
+                    loginPassword.setAttribute('type', 'password');
+                    toggleLoginPassword.textContent = '👁️';
+                    regPassword.setAttribute('type', 'password');
+                    toggleRegPassword.textContent = '👁️';
+                    
                     setActiveTab('login');
                 }
             }
-            // render tasks for given user
+
             function renderTasks(username) {
                 const tasks = getTasks(username);
-                taskListEl.innerHTML = '';  // clear
+                taskListEl.innerHTML = '';
                 if (!tasks.length) {
-                    taskListEl.innerHTML = '<li class="empty-tasks"> no tasks yet — add one above</li>';
+                    taskListEl.innerHTML = '<li class="empty-tasks">🌸 no tasks yet — add one above</li>';
                     return;
                 }
                 tasks.forEach((task, index) => {
                     const li = document.createElement('li');
                     li.className = 'task-item';
                     li.dataset.index = index;
+
                     const checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
                     checkbox.className = 'task-check';
                     checkbox.checked = task.done || false;
                     checkbox.addEventListener('change', () => toggleTask(index, username));
+
                     const span = document.createElement('span');
                     span.className = 'task-text';
                     span.textContent = task.text;
-                    if (task.done) span.style.textDecoration = 'line-through';  // visual cue
+                    if (task.done) span.style.textDecoration = 'line-through';
+
                     const delBtn = document.createElement('button');
                     delBtn.className = 'delete-task';
                     delBtn.innerHTML = '✕';
-                    delBtn.setAttribute('aria-label', 'delete task');
                     delBtn.addEventListener('click', (e) => {
                         e.stopPropagation();
                         deleteTask(index, username);
                     });
+
                     li.appendChild(checkbox);
                     li.appendChild(span);
                     li.appendChild(delBtn);
                     taskListEl.appendChild(li);
                 });
             }
-            // task helpers
+
             function toggleTask(index, username) {
                 const tasks = getTasks(username);
                 if (tasks[index]) {
@@ -442,113 +595,119 @@ href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&disp
                     renderTasks(username);
                 }
             }
+
             function deleteTask(index, username) {
                 const tasks = getTasks(username);
                 tasks.splice(index, 1);
                 saveTasks(username, tasks);
                 renderTasks(username);
             }
-            // ---------- AUTH: tab switching ----------
+
             function setActiveTab(tab) {
                 if (tab === 'login') {
                     loginTabBtn.classList.add('active');
                     registerTabBtn.classList.remove('active');
                     loginFormDiv.classList.add('active-form');
                     registerFormDiv.classList.remove('active-form');
-                    loginMessage.textContent = '';
-                    registerMessage.textContent = '';
+                    
+                    // Reset password visibility
+                    loginPassword.setAttribute('type', 'password');
+                    toggleLoginPassword.textContent = '👁️';
                 } else {
                     registerTabBtn.classList.add('active');
                     loginTabBtn.classList.remove('active');
                     registerFormDiv.classList.add('active-form');
                     loginFormDiv.classList.remove('active-form');
-                    loginMessage.textContent = '';
-                    registerMessage.textContent = '';
+                    
+                    // Reset password visibility
+                    regPassword.setAttribute('type', 'password');
+                    toggleRegPassword.textContent = '👁️';
                 }
             }
+
+            // Event listeners
             loginTabBtn.addEventListener('click', () => setActiveTab('login'));
             registerTabBtn.addEventListener('click', () => setActiveTab('register'));
-            // ---------- REGISTER ----------
+
             registerBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const username = regUsername.value.trim();
                 const password = regPassword.value.trim();
+
                 if (!username || !password) {
-                    registerMessage.textContent = '  both fields required';
+                    registerMessage.textContent = '⚠️ both fields required';
                     return;
                 }
                 if (password.length < 4) {
-                    registerMessage.textContent = ' password at least 4 characters';
+                    registerMessage.textContent = '🔐 password at least 4 characters';
                     return;
                 }
+
                 const users = getUsers();
                 if (users[username]) {
-                    registerMessage.textContent = ' username already exists';
+                    registerMessage.textContent = '❌ username already exists';
                     return;
                 }
-                // register: store password (plain for demo, no backend)
+
                 users[username] = password;
                 saveUsers(users);
-                // create empty task list (implicitly via get/save)
                 saveTasks(username, []);
-                // auto login after register
                 setCurrentUser(username);
                 refreshUI();
             });
-            // ---------- LOGIN ----------
+
             loginBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const username = loginUsername.value.trim();
                 const password = loginPassword.value.trim();
                 const users = getUsers();
+
                 if (!username || !password) {
-                    loginMessage.textContent = ' fill in both fields';
+                    loginMessage.textContent = '📝 fill in both fields';
                     return;
                 }
+
                 if (!users[username] || users[username] !== password) {
-                    loginMessage.textContent = ' wrong username or password';
+                    loginMessage.textContent = '🔒 wrong username or password';
                     return;
                 }
-                // success
+
                 setCurrentUser(username);
                 refreshUI();
             });
-            // ---------- LOGOUT ----------
+
             logoutBtn.addEventListener('click', function() {
                 setCurrentUser(null);
                 refreshUI();
             });
-            // ---------- ADD TASK ----------
+
             addTaskBtn.addEventListener('click', function() {
                 const user = getCurrentUser();
                 if (!user) return;
                 const text = taskInput.value.trim();
                 if (!text) return;
+
                 const tasks = getTasks(user);
                 tasks.push({ text: text, done: false });
                 saveTasks(user, tasks);
                 taskInput.value = '';
                 renderTasks(user);
             });
-            // allow Enter key on task input
+
             taskInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     addTaskBtn.click();
                 }
             });
+
             // initial load
             refreshUI();
-            // minor: clean message on input focus (just nice)
-            [loginUsername, loginPassword].forEach(f => f.addEventListener('focus', () =>
-loginMessage.textContent = ''));
-            [regUsername, regPassword].forEach(f => f.addEventListener('focus', () =>
-registerMessage.textContent = ''));
+
+            // clear messages on focus
+            [loginUsername, loginPassword].forEach(f => f.addEventListener('focus', () => loginMessage.textContent = ''));
+            [regUsername, regPassword].forEach(f => f.addEventListener('focus', () => registerMessage.textContent = ''));
         })();
     </script>
-    
-    
-
-    
 </body>
 </html>
